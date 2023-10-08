@@ -1,9 +1,7 @@
 import React from "react";
 import IssueBar from "../components/IssueBar";
 import { Table } from "@radix-ui/themes";
-import StatusBadge from "../components/StatusBadge";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { Skeleton } from "@/app/components";
 
 const loading = () => {
   const issues = [1, 2, 3, 4, 5];

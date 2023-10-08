@@ -1,16 +1,13 @@
-import StatusBadge from "@/app/components/StatusBadge";
+import { StatusBadge } from "@/app/components";
 import prisma from "@/prisma/client";
 import { Card, Flex, Heading } from "@radix-ui/themes";
-import delay from "delay";
 import { notFound } from "next/navigation";
-import React from "react";
 import ReactMarkdown from "react-markdown";
 interface Props {
   params: { id: string };
 }
 
 const DetailIssue = async ({ params }: Props) => {
-  await delay(2000);
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(params.id) },
   });
