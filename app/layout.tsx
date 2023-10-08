@@ -3,10 +3,13 @@ import "./theme-config.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Theme } from "@radix-ui/themes";
 import Navbar from "./Navbar";
-import { Theme, ThemePanel } from "@radix-ui/themes";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
