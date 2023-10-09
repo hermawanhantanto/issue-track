@@ -48,4 +48,7 @@ const Issues = async () => {
   );
 };
 
+export const dynamic = "force-dynamic"; // 30 seconds
+// static 5 minutes
+// bisa di cek di route segment config
 export default Issues;
