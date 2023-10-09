@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import EditIssueBtn from "./EditIssueBtn";
 import IssueDetail from "./IssueDetail";
 import DeleteIssueBtn from "./DeleteIssueBtn";
+
 interface Props {
   params: { id: string };
 }

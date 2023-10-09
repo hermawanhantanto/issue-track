@@ -1,5 +1,5 @@
 import React from "react";
-import IssueBar from "../components/IssueBar";
+import IssueBar from "../../components/IssueBar";
 import { Table } from "@radix-ui/themes";
 import { Skeleton } from "@/app/components";
 
