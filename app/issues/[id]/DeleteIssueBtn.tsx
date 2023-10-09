@@ -6,12 +6,15 @@ import React from "react";
 
 const DeleteIssueBtn = ({ issueId }: { issueId: number }) => {
   const router = useRouter();
+  const [error, setError] = React.useState(false);
+
   const onSubmit = async () => {
     try {
       await axios.delete("/api/issues/" + issueId);
       router.push("/issues");
       router.refresh();
     } catch (error) {
+      setError(true);
       console.error(error);
     }
   };
@@ -40,6 +43,22 @@ const DeleteIssueBtn = ({ issueId }: { issueId: number }) => {
               </Button>
             </AlertDialog.Action>
           </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
+      <AlertDialog.Root open={error}>
+        <AlertDialog.Content>
+          <AlertDialog.Title>Error</AlertDialog.Title>
+          <AlertDialog.Description>
+            There was an error deleting the issue.
+          </AlertDialog.Description>
+          <Button
+            color="gray"
+            variant="soft"
+            mt="2"
+            onClick={() => setError(false)}
+          >
+            Ok
+          </Button>
         </AlertDialog.Content>
       </AlertDialog.Root>
     </>
