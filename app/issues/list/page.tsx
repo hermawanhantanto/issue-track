@@ -1,35 +1,17 @@
-import prisma from "@/prisma/client";
-import { Table } from "@radix-ui/themes";
-import { IssueBar, LinkCustom, StatusBadge } from "@/app/components";
-import { Issue, Status } from "@prisma/client";
-import Link from "next/link";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
+import { IssueBar } from "@/app/components";
 import Pagination from "@/app/components/Pagination";
+import prisma from "@/prisma/client";
+import { Status } from "@prisma/client";
+import IssueTable, { IssueQuery, columnNames } from "./IssueTable";
+import { Flex } from "@radix-ui/themes";
 
-const Issues = async ({
-  searchParams,
-}: {
-  searchParams: { status: Status; orderBy: keyof Issue; page: string };
-}) => {
+const Issues = async ({ searchParams }: { searchParams: IssueQuery }) => {
   const statuses = Object.values(Status);
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
     : undefined;
 
-  const columns: { label: string; value: keyof Issue; classNames?: string }[] =
-    [
-      { label: "Issue", value: "title" },
-      { label: "Status", value: "status", classNames: "hidden md:table-cell" },
-      {
-        label: "Created",
-        value: "createdAt",
-        classNames: "hidden md:table-cell",
-      },
-    ];
-
-  const orderBy = columns
-    .map((item) => item.value)
-    .includes(searchParams.orderBy)
+  const orderBy = columnNames.includes(searchParams.orderBy)
     ? { [searchParams.orderBy]: "asc" }
     : undefined;
 
@@ -48,61 +30,15 @@ const Issues = async ({
   });
 
   return (
-    <div>
-      <div className="mb-5">
-        <IssueBar />
-      </div>
-      <Table.Root variant="surface">
-        <Table.Header>
-          <Table.Row>
-            {columns.map((item) => (
-              <Table.ColumnHeaderCell
-                key={item.label}
-                className={item.classNames ? item.classNames : ""}
-              >
-                <Link
-                  href={{
-                    query: { ...searchParams, orderBy: item.value },
-                  }}
-                >
-                  {item.label}{" "}
-                  {item.value === searchParams.orderBy && (
-                    <ArrowUpIcon className="inline" />
-                  )}
-                </Link>
-              </Table.ColumnHeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {issues.map((issue) => {
-            return (
-              <Table.Row key={issue.id}>
-                <Table.Cell>
-                  <LinkCustom href={`/issues/${issue.id}`}>
-                    {issue.title}
-                  </LinkCustom>
-                  <div className="block md:hidden">
-                    <StatusBadge status={issue.status} />
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
-                  <StatusBadge status={issue.status} />
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
-                  {issue.createdAt.toDateString()}
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table.Root>
+    <Flex direction="column" gap="4">
+      <IssueBar />
+      <IssueTable searchParams={searchParams} issues={issues} />
       <Pagination
         currentPage={page}
         pageSize={pageSize}
         itemCount={issueAccount}
       />
-    </div>
+    </Flex>
   );
 };
 
