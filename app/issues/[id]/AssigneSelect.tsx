@@ -7,16 +7,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const AssigneSelect = ({ issue }: { issue: Issue }) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => axios.get("/api/users").then((res) => res.data),
-    staleTime: 1000 * 60, // 60 seconds
-    retry: 3,
-  });
+  const { data: users, error, isLoading } = useUsers();
 
   if (isLoading) return <Skeleton />;
 
@@ -33,19 +24,23 @@ const AssigneSelect = ({ issue }: { issue: Issue }) => {
   //     fetchUsers();
   //   }, []);
 
+  const onValue = (value: string) => {
+    if (value === "unassigned") {
+      axios
+        .patch("/api/issues/" + issue.id, { assignedToUserId: null })
+        .catch((error) => toast.error(error.message));
+    } else {
+      axios
+        .patch("/api/issues/" + issue.id, { assignedToUserId: value })
+        .catch((error) => toast.error(error.message));
+    }
+  };
+
   return (
     <>
       <Select.Root
         onValueChange={(value) => {
-          if (value === "unassigned") {
-            axios
-              .patch("/api/issues/" + issue.id, { assignedToUserId: null })
-              .catch((error) => toast.error(error.message));
-          } else {
-            axios
-              .patch("/api/issues/" + issue.id, { assignedToUserId: value })
-              .catch((error) => toast.error(error.message));
-          }
+          onValue(value);
         }}
         defaultValue={issue.assignedToUserId || "unassigned"}
       >
@@ -68,5 +63,13 @@ const AssigneSelect = ({ issue }: { issue: Issue }) => {
     </>
   );
 };
+
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    staleTime: 1000 * 60, // 60 seconds
+    retry: 3,
+  });
 
 export default AssigneSelect;
