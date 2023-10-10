@@ -4,6 +4,7 @@ import { Issue, User } from "@prisma/client";
 import { Select, SelectGroup } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const AssigneSelect = ({ issue }: { issue: Issue }) => {
   const {
@@ -37,9 +38,13 @@ const AssigneSelect = ({ issue }: { issue: Issue }) => {
       <Select.Root
         onValueChange={(value) => {
           if (value === "unassigned") {
-            axios.patch("/api/issues/" + issue.id, { assignedToUserId: null });
+            axios
+              .patch("/api/issues/" + issue.id, { assignedToUserId: null })
+              .catch((error) => toast.error(error.message));
           } else {
-            axios.patch("/api/issues/" + issue.id, { assignedToUserId: value });
+            axios
+              .patch("/api/issues/" + issue.id, { assignedToUserId: value })
+              .catch((error) => toast.error(error.message));
           }
         }}
         defaultValue={issue.assignedToUserId || "unassigned"}
@@ -59,6 +64,7 @@ const AssigneSelect = ({ issue }: { issue: Issue }) => {
           </SelectGroup>
         </Select.Content>
       </Select.Root>
+      <Toaster />
     </>
   );
 };
