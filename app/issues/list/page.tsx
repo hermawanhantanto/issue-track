@@ -4,6 +4,7 @@ import prisma from "@/prisma/client";
 import { Status } from "@prisma/client";
 import IssueTable, { IssueQuery, columnNames } from "./IssueTable";
 import { Flex } from "@radix-ui/themes";
+import { Metadata } from "next";
 
 const Issues = async ({ searchParams }: { searchParams: IssueQuery }) => {
   const statuses = Object.values(Status);
@@ -40,6 +41,11 @@ const Issues = async ({ searchParams }: { searchParams: IssueQuery }) => {
       />
     </Flex>
   );
+};
+
+export const metadata: Metadata = {
+  title: "Issue Tracker - List",
+  description: "List of issues for issue",
 };
 
 export const dynamic = "force-dynamic"; // 30 seconds
