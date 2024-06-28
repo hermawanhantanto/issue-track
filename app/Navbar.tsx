@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { navbar } from "@/constant/constant";
 import Link from "next/link";
 import { AiFillBug } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import classnames from "classnames";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { Skeleton } from "./components";
 
 import {
@@ -59,7 +59,28 @@ const Navlink = () => {
 };
 
 const AuthBar = () => {
-  const { status, data: session } = useSession();
+  const [session, setSession] = useState<any>();
+  const [status, setStatus] = useState<string>("loading");
+
+  const fetchData = async () => {
+    try {
+      const data = await getSession();
+      console.log(data);
+      if (data) {
+        setSession(data.user);
+        setStatus("authenticated");
+      } else {
+        setStatus("unauthenticated");
+      }
+    } catch (error) {
+      console.log(error);
+      setStatus("unauthenticated");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   if (status === "loading") return <Skeleton width="3rem" />;
 
@@ -75,7 +96,7 @@ const AuthBar = () => {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Avatar
-            src={session!.user!.image!}
+            src={session!.image!}
             fallback="?"
             radius="full"
             size="3"
@@ -85,7 +106,7 @@ const AuthBar = () => {
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Label>
-            <Text size="2">{session!.user!.email!}</Text>
+            <Text size="2">{session!.email!}</Text>
           </DropdownMenu.Label>
           <DropdownMenu.Item>
             <Link href={"/api/auth/signout"}>Sign Out</Link>
